@@ -3,6 +3,10 @@ const mongoose = require('mongoose');
 const Indicador = require('./models/indicador');
 const cors = require('cors');
 const path = require('path');
+const dotenv = require('dotenv');
+
+// Configurar o dotenv para carregar variáveis de ambiente
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,10 +21,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-// 🔗 Conexão com MongoDB
-mongoose.connect('mongodb://localhost:27017/indicadores')
+// 🔗 Conexão com MongoDB (utilizando a variável de ambiente)
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ MongoDB conectado'))
-  .catch(err => console.error('❌ Erro ao conectar no MongoDB:', err));
+  .catch(err => {
+    console.error('❌ Erro ao conectar no MongoDB:', err);
+    process.exit(1); // Finaliza a execução caso não consiga conectar
+  });
 
 // 🏠 Página inicial
 app.get('/', (req, res) => {
@@ -36,6 +43,13 @@ app.get('/dashboard/criar', (req, res) => {
 app.post('/dashboard/criar', async (req, res) => {
   try {
     const { nome, meta, oeo } = req.body;
+
+    // Validação simples (pode ser expandida conforme necessidade)
+    if (!nome || !meta || !oeo) {
+      return res.render('dashboard/cadastro_indicadore', {
+        error: 'Preencha todos os campos corretamente.'
+      });
+    }
 
     const novoIndicador = new Indicador({
       nome,
@@ -54,7 +68,7 @@ app.post('/dashboard/criar', async (req, res) => {
   }
 });
 
-// 📊 Página de acompanhamento
+// 📊 Página de acompanhamento (GET)
 app.get('/dashboard/acompanhar', async (req, res) => {
   try {
     const indicadores = await Indicador.find();
@@ -68,10 +82,10 @@ app.get('/dashboard/acompanhar', async (req, res) => {
 
     res.render('dashboard/Gest35BI_acompanhar', { indicadoresPorOeo });
   } catch (error) {
+    console.error('Erro ao carregar indicadores:', error);
     res.status(500).send('Erro ao carregar indicadores.');
   }
 });
-
 
 // 🔁 API REST -------------------------------
 
@@ -81,6 +95,7 @@ app.get('/indicadores', async (req, res) => {
     const indicadores = await Indicador.find();
     res.json(indicadores);
   } catch (error) {
+    console.error('Erro ao buscar indicadores:', error);
     res.status(500).json({ error: 'Erro ao buscar indicadores' });
   }
 });
@@ -92,6 +107,7 @@ app.post('/indicadores', async (req, res) => {
     await novo.save();
     res.status(201).json(novo);
   } catch (error) {
+    console.error('Erro ao criar indicador:', error);
     res.status(400).json({ error: 'Erro ao criar indicador' });
   }
 });
@@ -103,6 +119,7 @@ app.put('/indicadores/:id', async (req, res) => {
     if (!atualizado) return res.status(404).json({ error: 'Indicador não encontrado' });
     res.json(atualizado);
   } catch (error) {
+    console.error('Erro ao atualizar indicador:', error);
     res.status(400).json({ error: 'Erro ao atualizar indicador' });
   }
 });
@@ -114,6 +131,7 @@ app.delete('/indicadores/:id', async (req, res) => {
     if (!deletado) return res.status(404).json({ error: 'Indicador não encontrado' });
     res.sendStatus(204);
   } catch (error) {
+    console.error('Erro ao excluir indicador:', error);
     res.status(400).json({ error: 'Erro ao excluir indicador' });
   }
 });
@@ -135,12 +153,14 @@ app.patch('/indicadores/:id/desempenho', async (req, res) => {
     await indicador.save();
     res.json(indicador);
   } catch (error) {
+    console.error('Erro ao atualizar desempenho:', error);
     res.status(400).json({ error: 'Erro ao atualizar desempenho' });
   }
 });
 
 // ------------------------------------------
 
+// Iniciar o servidor
 app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
 });
