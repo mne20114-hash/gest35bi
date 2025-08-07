@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Indicador</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            padding: 40px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            width: 100%;
+            max-width: 600px; /* Tamanho máximo do formulário */
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        button {
+            background-color: #1e40af;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2938c7;
+        }
+
+        .back-btn {
+            color: #1e40af; /* Cor do link */
+            font-size: 1.1rem;
+            text-decoration: none; /* Remover sublinhado */
+            display: block;
+            text-align: center;
+            margin-top: 40px; /* Aumentando a margem superior para o link */
+            transition: color 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: #2938c7; /* Cor ao passar o mouse */
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Cadastrar Indicador</h1>
+
+        <% if (error) { %>
+            <div class="error">
+                <%= error %>
+            </div>
+        <% } %>
+
+        <form action="/dashboard/criar" method="POST">
+            <div class="form-group">
+                <label for="nome">Nome do Indicador</label>
+                <input type="text" id="nome" name="nome" required>
+            </div>
+
+            <div class="form-group">
+                <label for="meta">Meta</label>
+                <input type="text" id="meta" name="meta" required>
+            </div>
+
+            <div class="form-group">
+                <label for="oeo">OEO (1 a 9)</label>
+                <select id="oeo" name="oeo" required>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                </select>
+            </div>
+
+            <button type="submit">Cadastrar Indicador</button>
+        </form>
+
+        <!-- Link de Voltar -->
+        <a href="/" class="back-btn">Voltar para a Página Inicial</a>
+    </div>
+
+</body>
+</html>

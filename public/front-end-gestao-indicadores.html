@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestão de Indicadores</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      text-align: center;
+    }
+    form {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    input, select, button {
+      padding: 8px;
+      margin: 5px;
+      font-size: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #eaeaea;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gestão de Indicadores</h1>
+
+  <form id="form-indicador">
+    <input type="text" id="nome" placeholder="Nome do Indicador" required>
+    <input type="text" id="meta" placeholder="Meta (%)" required>
+    <input type="text" id="oeo" placeholder="OEO">
+    <button type="submit">Adicionar Indicador</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Meta</th>
+        <th>OEO</th>
+        <th>Desempenho</th>
+        <th>Mês</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="tabela-indicadores"></tbody>
+  </table>
+
+  <script>
+    async function carregarIndicadores() {
+      const res = await fetch('/indicadores');
+      const dados = await res.json();
+      const tabela = document.getElementById('tabela-indicadores');
+      tabela.innerHTML = '';
+
+      dados.forEach(ind => {
+        const linha = document.createElement('tr');
+        linha.innerHTML = `
+          <td><input value="\${ind.nome}" onchange="editarCampo('\${ind._id}', 'nome', this.value)"></td>
+          <td><input value="\${ind.meta}" onchange="editarCampo('\${ind._id}', 'meta', this.value)"></td>
+          <td><input value="\${ind.oeo}" onchange="editarCampo('\${ind._id}', 'oeo', this.value)"></td>
+          <td><input id="val-\${ind._id}" placeholder="Digite desempenho"></td>
+          <td>
+            <select id="mes-\${ind._id}">
+              <option value="">Mês</option>
+              <option value="janeiro">Jan</option>
+              <option value="fevereiro">Fev</option>
+              <option value="marco">Mar</option>
+              <option value="abril">Abr</option>
+              <option value="maio">Mai</option>
+              <option value="junho">Jun</option>
+              <option value="julho">Jul</option>
+              <option value="agosto">Ago</option>
+              <option value="setembro">Set</option>
+              <option value="outubro">Out</option>
+              <option value="novembro">Nov</option>
+              <option value="dezembro">Dez</option>
+            </select>
+          </td>
+          <td>
+            <button onclick="atualizarDesempenho('\${ind._id}')">💾</button>
+            <button onclick="excluirIndicador('\${ind._id}')">🗑️</button>
+          </td>
+        `;
+        tabela.appendChild(linha);
+      });
+    }
+
+    async function editarCampo(id, campo, valor) {
+      await fetch('/indicadores/' + id, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ [campo]: valor })
+      });
+    }
+
+    async function atualizarDesempenho(id) {
+      const mes = document.getElementById('mes-' + id).value;
+      const valor = document.getElementById('val-' + id).value;
+      if (!mes || !valor) return alert('Preencha mês e valor');
+      await fetch('/indicadores/' + id + '/desempenho', {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ mes, valor })
+      });
+      carregarIndicadores();
+    }
+
+    async function excluirIndicador(id) {
+      if (!confirm('Deseja excluir este indicador?')) return;
+      await fetch('/indicadores/' + id, { method: 'DELETE' });
+      carregarIndicadores();
+    }
+
+    document.getElementById('form-indicador').addEventListener('submit', async e => {
+      e.preventDefault();
+      const nome = document.getElementById('nome').value;
+      const meta = document.getElementById('meta').value;
+      const oeo = document.getElementById('oeo').value;
+
+      await fetch('/indicadores', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ nome, meta, oeo })
+      });
+
+      e.target.reset();
+      carregarIndicadores();
+    });
+
+    carregarIndicadores();
+  </script>
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Acompanhar Indicadores</title>
+  <style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 40px;
+    background-image: url('/imagens/dashboards.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+
+  .container {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    margin: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    max-width: 95%;
+    overflow-x: auto;
+  }
+
+  .oeo-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  table {
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    table-layout: fixed;
+    font-size: 13px;
+  }
+
+  th {
+    background-color: #f4f4f4;
+    text-align: center;
+    font-size: 14px;
+    vertical-align: middle;
+  }
+
+  td {
+    text-align: center;
+    vertical-align: middle;
+    word-wrap: break-word;
+  }
+
+  th:nth-child(1), td:nth-child(1) {
+    width: 20%;
+    text-align: left;
+  }
+
+  th:nth-child(2), td:nth-child(2) {
+    width: 8%;
+  }
+
+  th:nth-child(3), td:nth-child(3) {
+    width: 20%;
+  }
+
+  th:nth-child(4), td:nth-child(4) {
+    width: 14%;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  td:nth-child(4) .actions {
+    padding-left: 3mm;
+  }
+
+  th:nth-child(n+5), td:nth-child(n+5) {
+    width: 5.5%;
+  }
+
+  .sair-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #1e40af;
+    color: white;
+    padding: 8px 15px;
+    font-size: 14px;
+    border-radius: 5px;
+    text-decoration: none;
+  }
+
+  .actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .actions button {
+    background-color: transparent;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-left: 1mm;
+  }
+
+  .month-input {
+    min-width: 60px;
+    flex: 0 0 60px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .month-select {
+    min-width: 70px;
+    max-width: 90px;
+    flex: 0 0 auto;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .mes-desempenho-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  margin-left: 7mm;
+}
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6);
+  }
+
+  .modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+  }
+
+  .modal-content input {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+  }
+
+  .modal-content button {
+    margin: 10px 5px 0 5px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .btn-confirm {
+    background-color: #1e40af;
+    color: white;
+  }
+
+  .btn-cancel {
+    background-color: #ccc;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <% Object.keys(indicadoresPorOeo).forEach((oeo) => { %>
+      <% if (indicadoresPorOeo[oeo].length > 0) { %>
+        <div class="oeo-section">
+          <div class="oeo-title">OEO - <%= oeo %></div>
+          <table>
+            <thead>
+              <tr>
+                <th>Indicador</th>
+                <th>Meta</th>
+                <th>Desempenho</th>
+                <th>Ações</th>
+                <th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th><th>Mai</th><th>Jun</th>
+                <th>Jul</th><th>Ago</th><th>Set</th><th>Out</th><th>Nov</th><th>Dez</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% indicadoresPorOeo[oeo].forEach(indicador => { %>
+                <tr id="row-<%= indicador._id %>">
+                  <td class="indicador-nome"><%= indicador.nome %></td>
+                  <td class="indicador-meta"><%= indicador.meta %> %</td>
+                  <td>
+  <div class="mes-desempenho-group">
+    <input type="text" class="month-input" name="desempenho-<%= indicador._id %>" placeholder="%">
+    <select class="month-select" id="mes-selecionado-<%= indicador._id %>">
+      <option value="">Mês</option>
+      <option value="janeiro">Jan</option>
+      <option value="fevereiro">Fev</option>
+      <option value="marco">Mar</option>
+      <option value="abril">Abr</option>
+      <option value="maio">Mai</option>
+      <option value="junho">Jun</option>
+      <option value="julho">Jul</option>
+      <option value="agosto">Ago</option>
+      <option value="setembro">Set</option>
+      <option value="outubro">Out</option>
+      <option value="novembro">Nov</option>
+      <option value="dezembro">Dez</option>
+    </select>
+  </div>
+</td>
+                  <td class="actions">
+                    <button onclick="abrirModalEditar('<%= indicador._id %>')">📝</button>
+                    <button onclick="abrirModalExcluir('<%= indicador._id %>')">🗑️</button>
+                    <button onclick="salvarIndicador('<%= indicador._id %>')">💾</button>
+                  </td>
+                  <% ['janeiro','fevereiro','marco','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'].forEach(m => { %>
+  <td id="<%= m %>-<%= indicador._id %>"><%= indicador.desempenhos[m] ? indicador.desempenhos[m] + ' %' : '' %>
+</td><% }) %>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    <% }); %>
+    <a href="/" class="sair-btn">Voltar para a Página Inicial</a>
+  </div>
+
+  <!-- Modais -->
+  <div id="modalEditar" class="modal">
+    <div class="modal-content">
+      <h3>Editar Indicador</h3>
+      <input type="text" id="modal-nome" placeholder="Nome do Indicador">
+      <input type="number" id="modal-meta" placeholder="Meta (%)">
+      <button class="btn-confirm" onclick="confirmarEdicao()">Salvar</button>
+      <button class="btn-cancel" onclick="fecharModalEditar()">Cancelar</button>
+    </div>
+  </div>
+
+  <div id="modalExcluir" class="modal">
+    <div class="modal-content">
+      <p>Tem certeza que deseja excluir este indicador?</p>
+      <button class="btn-confirm" onclick="confirmarExclusao()">Confirmar</button>
+      <button class="btn-cancel" onclick="fecharModalExcluir()">Cancelar</button>
+    </div>
+  </div>
+
+  <script>
+    let idAtual = null;
+
+    function abrirModalEditar(id) {
+      idAtual = id;
+      const nome = document.querySelector(`#row-${id} .indicador-nome`).textContent.trim();
+      const meta = document.querySelector(`#row-${id} .indicador-meta`).textContent.replace('%','').trim();
+      document.getElementById('modal-nome').value = nome;
+      document.getElementById('modal-meta').value = meta;
+      document.getElementById('modalEditar').style.display = 'block';
+    }
+
+    function fecharModalEditar() {
+      document.getElementById('modalEditar').style.display = 'none';
+    }
+
+    function confirmarEdicao() {
+  const novoNome = document.getElementById('modal-nome').value;
+  const novaMeta = document.getElementById('modal-meta').value;
+
+  fetch('/indicadores/' + idAtual, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nome: novoNome, meta: novaMeta })
+  }).then(() => location.reload());
+
+  fecharModalEditar();
+}
+
+    function abrirModalExcluir(id) {
+      idAtual = id;
+      document.getElementById('modalExcluir').style.display = 'block';
+    }
+
+    function fecharModalExcluir() {
+      document.getElementById('modalExcluir').style.display = 'none';
+    }
+
+    function confirmarExclusao() {
+      fetch('/indicadores/' + idAtual, { method: 'DELETE' })
+  .then(() => location.reload());
+      fecharModalExcluir();
+    }
+
+function salvarIndicador(id) {
+  const mes = document.getElementById('mes-selecionado-' + id).value;
+  const valor = document.querySelector(`input[name="desempenho-${id}"]`).value;
+
+  if (!mes || !valor) return alert('Preencha mês e valor');
+
+  fetch('/indicadores/' + id + '/desempenho', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ mes, valor })
+  }).then(() => {
+    const celula = document.getElementById(mes + '-' + id);
+    if (celula) {
+      celula.textContent = valor + " %";
+    }
+
+    document.querySelector(`input[name="desempenho-${id}"]`).value = '';
+    document.getElementById('mes-selecionado-' + id).value = '';
+  });
+}
+
+    window.onclick = function(event) {
+      if (event.target.classList.contains('modal')) {
+        fecharModalEditar();
+        fecharModalExcluir();
+      }
+    };
+  </script>
+</body>
+</html>
