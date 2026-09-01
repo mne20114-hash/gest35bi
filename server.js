@@ -22,12 +22,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 // 🔗 Conexão com MongoDB (utilizando a variável de ambiente)
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ MongoDB conectado'))
-  .catch(err => {
-    console.error('❌ Erro ao conectar no MongoDB:', err);
-    process.exit(1); // Finaliza a execução caso não consiga conectar
-  });
+if (require.main === module) {
+  mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log('✅ MongoDB conectado'))
+    .catch(err => {
+      console.error('❌ Erro ao conectar no MongoDB:', err);
+      process.exit(1); // Finaliza a execução caso não consiga conectar
+    });
+}
 
 // 🏠 Página inicial
 app.get('/', (req, res) => {
@@ -161,6 +163,10 @@ app.patch('/indicadores/:id/desempenho', async (req, res) => {
 // ------------------------------------------
 
 // Iniciar o servidor
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
