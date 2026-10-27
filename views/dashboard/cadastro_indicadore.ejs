@@ -103,8 +103,17 @@
             </div>
 
             <div class="form-group">
-                <label for="meta">Meta</label>
-                <input type="text" id="meta" name="meta" required>
+                <label for="meta">Meta <span style="font-weight:normal;color:#555">(ex: 90%)</span></label>
+                <input type="text" id="meta" name="meta" required placeholder="Ex: 90%">
+            </div>
+
+            <div class="form-group">
+                <label for="formula">Fórmula de cálculo <span style="font-weight:normal;color:#555">(opcional)</span></label>
+                <input type="text" id="formula" name="formula"
+                       placeholder="Ex: Qtde aprovados ÷ Efetivo total × 100">
+                <small style="color:#666;display:block;margin-top:4px">
+                  Descreva como o resultado é calculado. Ao lançar o desempenho, você pode digitar a expressão diretamente (ex: <strong>45/50*100</strong>) e o sistema calcula automaticamente.
+                </small>
             </div>
 
             <div class="form-group">

@@ -5,6 +5,7 @@ const indicadorSchema = new mongoose.Schema({
   nome: String,
   meta: String,
   oeo: String,
+  formula: { type: String, default: '' },
   desempenhos: {
     janeiro: String,
     fevereiro: String,

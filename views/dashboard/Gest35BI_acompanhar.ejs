@@ -5,182 +5,171 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Acompanhar Indicadores</title>
   <style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 40px;
-    background-image: url('/imagens/dashboards.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-  }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 40px 20px;
+      background-image: url('/imagens/dashboards.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
 
-  .container {
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 30px;
-    margin: auto;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    max-width: 95%;
-    overflow-x: auto;
-  }
+    .container {
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 24px;
+      margin: auto;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      border-radius: 10px;
+      max-width: 100%;
+      overflow-x: auto;
+    }
 
-  .oeo-title {
-    font-size: 1.3rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-    text-align: center;
-  }
+    .oeo-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin: 20px 0 8px;
+      text-align: center;
+      background: #1e40af;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+    }
 
-  table {
-    width: 100%;
-    max-width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    table-layout: fixed;
-    font-size: 13px;
-  }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+      font-size: 13px;
+    }
 
-  th {
-    background-color: #f4f4f4;
-    text-align: center;
-    font-size: 14px;
-    vertical-align: middle;
-  }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 6px 8px;
+      text-align: center;
+      vertical-align: middle;
+    }
 
-  td {
-    text-align: center;
-    vertical-align: middle;
-    word-wrap: break-word;
-  }
+    th {
+      background-color: #f0f4ff;
+      font-size: 12px;
+    }
 
-  th:nth-child(1), td:nth-child(1) {
-    width: 20%;
-    text-align: left;
-  }
+    td:nth-child(1) { text-align: left; min-width: 160px; }
+    td:nth-child(2) { min-width: 60px; }
 
-  th:nth-child(2), td:nth-child(2) {
-    width: 8%;
-  }
+    /* coluna de lançamento */
+    td:nth-child(3) { min-width: 220px; }
 
-  th:nth-child(3), td:nth-child(3) {
-    width: 20%;
-  }
+    /* meses */
+    td:nth-child(n+5) { min-width: 52px; font-size: 12px; }
 
-  th:nth-child(4), td:nth-child(4) {
-    width: 14%;
-    text-align: center;
-    vertical-align: middle;
-  }
+    .formula-badge {
+      display: block;
+      font-size: 11px;
+      color: #555;
+      font-style: italic;
+      margin-top: 2px;
+    }
 
-  td:nth-child(4) .actions {
-    padding-left: 3mm;
-  }
+    .lancamento-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
 
-  th:nth-child(n+5), td:nth-child(n+5) {
-    width: 5.5%;
-  }
+    .expr-input {
+      width: 90px;
+      padding: 5px 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 12px;
+    }
 
-  .sair-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color: #1e40af;
-    color: white;
-    padding: 8px 15px;
-    font-size: 14px;
-    border-radius: 5px;
-    text-decoration: none;
-  }
+    .expr-preview {
+      font-size: 11px;
+      color: #1e40af;
+      font-weight: bold;
+      min-width: 34px;
+    }
 
-  .actions {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-start;
-    align-items: center;
-  }
+    .month-select {
+      padding: 5px 4px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 12px;
+    }
 
-  .actions button {
-    background-color: transparent;
-    border: none;
-    font-size: 1.2rem;
-    cursor: pointer;
-    margin-left: 1mm;
-  }
+    .btn-save {
+      background: #1e40af;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 8px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .btn-save:hover { background: #2938c7; }
 
-  .month-input {
-    min-width: 60px;
-    flex: 0 0 60px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
+    .actions { display: flex; gap: 6px; justify-content: center; }
+    .actions button {
+      background: transparent;
+      border: none;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
 
-  .month-select {
-    min-width: 70px;
-    max-width: 90px;
-    flex: 0 0 auto;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
+    /* destaque verde/vermelho ao comparar com meta */
+    .acima-meta { background-color: #d1fae5; }
+    .abaixo-meta { background-color: #fee2e2; }
 
-  .mes-desempenho-group {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: nowrap;
-  overflow: hidden;
-  margin-left: 7mm;
-}
+    .sair-btn {
+      display: inline-block;
+      margin-top: 20px;
+      background: #1e40af;
+      color: white;
+      padding: 8px 18px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 14px;
+    }
 
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.6);
-  }
-
-  .modal-content {
-    background-color: #fff;
-    margin: 10% auto;
-    padding: 20px;
-    border-radius: 8px;
-    width: 300px;
-    text-align: center;
-  }
-
-  .modal-content input {
-    width: 100%;
-    padding: 8px;
-    margin: 10px 0;
-  }
-
-  .modal-content button {
-    margin: 10px 5px 0 5px;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  .btn-confirm {
-    background-color: #1e40af;
-    color: white;
-  }
-
-  .btn-cancel {
-    background-color: #ccc;
-  }
-</style>
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.6);
+    }
+    .modal-content {
+      background: #fff;
+      margin: 8% auto;
+      padding: 24px;
+      border-radius: 8px;
+      width: 360px;
+      text-align: center;
+    }
+    .modal-content h3 { margin-top: 0; }
+    .modal-content input, .modal-content textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 6px 0;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .modal-content textarea { resize: vertical; min-height: 56px; }
+    .modal-content small { color: #666; display: block; text-align: left; margin-bottom: 4px; }
+    .btn-confirm { background: #1e40af; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; margin: 6px 4px 0; }
+    .btn-cancel  { background: #ccc; color: #333; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; margin: 6px 4px 0; }
+  </style>
 </head>
 <body>
   <div class="container">
+
     <% Object.keys(indicadoresPorOeo).forEach((oeo) => { %>
       <% if (indicadoresPorOeo[oeo].length > 0) { %>
         <div class="oeo-section">
@@ -188,9 +177,9 @@
           <table>
             <thead>
               <tr>
-                <th>Indicador</th>
+                <th>Indicador / Fórmula</th>
                 <th>Meta</th>
-                <th>Desempenho</th>
+                <th>Lançar desempenho</th>
                 <th>Ações</th>
                 <th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th><th>Mai</th><th>Jun</th>
                 <th>Jul</th><th>Ago</th><th>Set</th><th>Out</th><th>Nov</th><th>Dez</th>
@@ -199,36 +188,63 @@
             <tbody>
               <% indicadoresPorOeo[oeo].forEach(indicador => { %>
                 <tr id="row-<%= indicador._id %>">
-                  <td class="indicador-nome"><%= indicador.nome %></td>
-                  <td class="indicador-meta"><%= indicador.meta %> %</td>
+
+                  <!-- Nome + fórmula -->
                   <td>
-  <div class="mes-desempenho-group">
-    <input type="text" class="month-input" name="desempenho-<%= indicador._id %>" placeholder="%">
-    <select class="month-select" id="mes-selecionado-<%= indicador._id %>">
-      <option value="">Mês</option>
-      <option value="janeiro">Jan</option>
-      <option value="fevereiro">Fev</option>
-      <option value="marco">Mar</option>
-      <option value="abril">Abr</option>
-      <option value="maio">Mai</option>
-      <option value="junho">Jun</option>
-      <option value="julho">Jul</option>
-      <option value="agosto">Ago</option>
-      <option value="setembro">Set</option>
-      <option value="outubro">Out</option>
-      <option value="novembro">Nov</option>
-      <option value="dezembro">Dez</option>
-    </select>
-  </div>
-</td>
-                  <td class="actions">
-                    <button onclick="abrirModalEditar('<%= indicador._id %>')">📝</button>
-                    <button onclick="abrirModalExcluir('<%= indicador._id %>')">🗑️</button>
-                    <button onclick="salvarIndicador('<%= indicador._id %>')">💾</button>
+                    <span class="indicador-nome"><%= indicador.nome %></span>
+                    <% if (indicador.formula) { %>
+                      <span class="formula-badge" title="Fórmula de cálculo">📐 <%= indicador.formula %></span>
+                    <% } %>
                   </td>
+
+                  <!-- Meta -->
+                  <td class="indicador-meta"><%= indicador.meta %></td>
+
+                  <!-- Lançar desempenho com cálculo em tempo real -->
+                  <td>
+                    <div class="lancamento-group">
+                      <input
+                        type="text"
+                        class="expr-input"
+                        id="expr-<%= indicador._id %>"
+                        placeholder="Ex: 45/50*100"
+                        oninput="calcularPreview('<%= indicador._id %>')"
+                      >
+                      <span class="expr-preview" id="preview-<%= indicador._id %>"></span>
+                      <select class="month-select" id="mes-<%= indicador._id %>">
+                        <option value="">Mês</option>
+                        <option value="janeiro">Jan</option>
+                        <option value="fevereiro">Fev</option>
+                        <option value="marco">Mar</option>
+                        <option value="abril">Abr</option>
+                        <option value="maio">Mai</option>
+                        <option value="junho">Jun</option>
+                        <option value="julho">Jul</option>
+                        <option value="agosto">Ago</option>
+                        <option value="setembro">Set</option>
+                        <option value="outubro">Out</option>
+                        <option value="novembro">Nov</option>
+                        <option value="dezembro">Dez</option>
+                      </select>
+                      <button class="btn-save" onclick="salvarIndicador('<%= indicador._id %>', '<%= indicador.meta %>')">💾</button>
+                    </div>
+                  </td>
+
+                  <!-- Ações editar/excluir -->
+                  <td>
+                    <div class="actions">
+                      <button onclick="abrirModalEditar('<%= indicador._id %>')" title="Editar">📝</button>
+                      <button onclick="abrirModalExcluir('<%= indicador._id %>')" title="Excluir">🗑️</button>
+                    </div>
+                  </td>
+
+                  <!-- Meses Jan–Dez -->
                   <% ['janeiro','fevereiro','marco','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'].forEach(m => { %>
-  <td id="<%= m %>-<%= indicador._id %>"><%= indicador.desempenhos[m] ? indicador.desempenhos[m] + ' %' : '' %>
-</td><% }) %>
+                    <td id="<%= m %>-<%= indicador._id %>">
+                      <%= indicador.desempenhos[m] ? indicador.desempenhos[m] : '' %>
+                    </td>
+                  <% }) %>
+
                 </tr>
               <% }); %>
             </tbody>
@@ -236,98 +252,130 @@
         </div>
       <% } %>
     <% }); %>
-    <a href="/" class="sair-btn">Voltar para a Página Inicial</a>
+
+    <br>
+    <a href="/" class="sair-btn">← Página Inicial</a>
   </div>
 
-  <!-- Modais -->
+  <!-- Modal Editar -->
   <div id="modalEditar" class="modal">
     <div class="modal-content">
       <h3>Editar Indicador</h3>
+      <label style="text-align:left;display:block;font-weight:bold">Nome</label>
       <input type="text" id="modal-nome" placeholder="Nome do Indicador">
-      <input type="number" id="modal-meta" placeholder="Meta (%)">
+      <label style="text-align:left;display:block;font-weight:bold;margin-top:8px">Meta</label>
+      <input type="text" id="modal-meta" placeholder="Meta (ex: 90%)">
+      <label style="text-align:left;display:block;font-weight:bold;margin-top:8px">Fórmula de cálculo</label>
+      <small>Deixe em branco se não utilizar fórmula</small>
+      <textarea id="modal-formula" placeholder="Ex: Qtde aprovados ÷ Efetivo total × 100"></textarea>
+      <br>
       <button class="btn-confirm" onclick="confirmarEdicao()">Salvar</button>
-      <button class="btn-cancel" onclick="fecharModalEditar()">Cancelar</button>
+      <button class="btn-cancel"  onclick="fecharModalEditar()">Cancelar</button>
     </div>
   </div>
 
+  <!-- Modal Excluir -->
   <div id="modalExcluir" class="modal">
     <div class="modal-content">
       <p>Tem certeza que deseja excluir este indicador?</p>
       <button class="btn-confirm" onclick="confirmarExclusao()">Confirmar</button>
-      <button class="btn-cancel" onclick="fecharModalExcluir()">Cancelar</button>
+      <button class="btn-cancel"  onclick="fecharModalExcluir()">Cancelar</button>
     </div>
   </div>
 
   <script>
     let idAtual = null;
 
+    /* ---- Cálculo em tempo real ---- */
+    function calcularPreview(id) {
+      const raw = document.getElementById('expr-' + id).value.trim();
+      const prev = document.getElementById('preview-' + id);
+      if (!raw) { prev.textContent = ''; return; }
+      try {
+        // Permite apenas números e operadores básicos (segurança)
+        if (!/^[\d\s\+\-\*\/\.\(\)]+$/.test(raw)) { prev.textContent = '?'; return; }
+        const result = Function('"use strict"; return (' + raw + ')')();
+        if (!isFinite(result)) { prev.textContent = '?'; return; }
+        prev.textContent = '= ' + parseFloat(result.toFixed(2));
+      } catch(e) { prev.textContent = '?'; }
+    }
+
+    /* ---- Salvar desempenho ---- */
+    function salvarIndicador(id, meta) {
+      const exprEl = document.getElementById('expr-' + id);
+      const mes    = document.getElementById('mes-' + id).value;
+      const raw    = exprEl.value.trim();
+
+      if (!mes || !raw) { alert('Preencha a expressão e selecione o mês.'); return; }
+
+      let valor;
+      try {
+        if (!/^[\d\s\+\-\*\/\.\(\)]+$/.test(raw)) { alert('Expressão inválida. Use apenas números e + - * / ( )'); return; }
+        const calc = Function('"use strict"; return (' + raw + ')')();
+        if (!isFinite(calc)) { alert('Resultado inválido.'); return; }
+        valor = parseFloat(calc.toFixed(2)).toString();
+      } catch(e) { alert('Expressão inválida.'); return; }
+
+      fetch('/indicadores/' + id + '/desempenho', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mes, valor })
+      }).then(r => {
+        if (!r.ok) { alert('Erro ao salvar.'); return; }
+        const celula = document.getElementById(mes + '-' + id);
+        if (celula) {
+          celula.textContent = valor;
+          // Destaque visual comparando com meta numérica
+          const metaNum = parseFloat(meta);
+          if (!isNaN(metaNum)) {
+            celula.className = parseFloat(valor) >= metaNum ? 'acima-meta' : 'abaixo-meta';
+          }
+        }
+        exprEl.value = '';
+        document.getElementById('preview-' + id).textContent = '';
+        document.getElementById('mes-' + id).value = '';
+      });
+    }
+
+    /* ---- Modal Editar ---- */
     function abrirModalEditar(id) {
       idAtual = id;
-      const nome = document.querySelector(`#row-${id} .indicador-nome`).textContent.trim();
-      const meta = document.querySelector(`#row-${id} .indicador-meta`).textContent.replace('%','').trim();
-      document.getElementById('modal-nome').value = nome;
-      document.getElementById('modal-meta').value = meta;
+      const row     = document.getElementById('row-' + id);
+      const nome    = row.querySelector('.indicador-nome').textContent.trim();
+      const meta    = row.querySelector('.indicador-meta').textContent.trim();
+      const badge   = row.querySelector('.formula-badge');
+      const formula = badge ? badge.textContent.replace('📐','').trim() : '';
+      document.getElementById('modal-nome').value    = nome;
+      document.getElementById('modal-meta').value    = meta;
+      document.getElementById('modal-formula').value = formula;
       document.getElementById('modalEditar').style.display = 'block';
     }
-
-    function fecharModalEditar() {
-      document.getElementById('modalEditar').style.display = 'none';
+    function fecharModalEditar() { document.getElementById('modalEditar').style.display = 'none'; }
+    function confirmarEdicao() {
+      const novoNome    = document.getElementById('modal-nome').value;
+      const novaMeta    = document.getElementById('modal-meta').value;
+      const novaFormula = document.getElementById('modal-formula').value;
+      fetch('/indicadores/' + idAtual, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome: novoNome, meta: novaMeta, formula: novaFormula })
+      }).then(() => location.reload());
+      fecharModalEditar();
     }
 
-    function confirmarEdicao() {
-  const novoNome = document.getElementById('modal-nome').value;
-  const novaMeta = document.getElementById('modal-meta').value;
-
-  fetch('/indicadores/' + idAtual, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ nome: novoNome, meta: novaMeta })
-  }).then(() => location.reload());
-
-  fecharModalEditar();
-}
-
+    /* ---- Modal Excluir ---- */
     function abrirModalExcluir(id) {
       idAtual = id;
       document.getElementById('modalExcluir').style.display = 'block';
     }
-
-    function fecharModalExcluir() {
-      document.getElementById('modalExcluir').style.display = 'none';
-    }
-
+    function fecharModalExcluir() { document.getElementById('modalExcluir').style.display = 'none'; }
     function confirmarExclusao() {
-      fetch('/indicadores/' + idAtual, { method: 'DELETE' })
-  .then(() => location.reload());
+      fetch('/indicadores/' + idAtual, { method: 'DELETE' }).then(() => location.reload());
       fecharModalExcluir();
     }
 
-function salvarIndicador(id) {
-  const mes = document.getElementById('mes-selecionado-' + id).value;
-  const valor = document.querySelector(`input[name="desempenho-${id}"]`).value;
-
-  if (!mes || !valor) return alert('Preencha mês e valor');
-
-  fetch('/indicadores/' + id + '/desempenho', {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ mes, valor })
-  }).then(() => {
-    const celula = document.getElementById(mes + '-' + id);
-    if (celula) {
-      celula.textContent = valor + " %";
-    }
-
-    document.querySelector(`input[name="desempenho-${id}"]`).value = '';
-    document.getElementById('mes-selecionado-' + id).value = '';
-  });
-}
-
-    window.onclick = function(event) {
-      if (event.target.classList.contains('modal')) {
-        fecharModalEditar();
-        fecharModalExcluir();
-      }
+    window.onclick = function(e) {
+      if (e.target.classList.contains('modal')) { fecharModalEditar(); fecharModalExcluir(); }
     };
   </script>
 </body>

@@ -44,7 +44,7 @@ app.get('/dashboard/criar', (req, res) => {
 // 📥 Salvar novo indicador (POST)
 app.post('/dashboard/criar', async (req, res) => {
   try {
-    const { nome, meta, oeo } = req.body;
+    const { nome, meta, oeo, formula } = req.body;
 
     // Validação simples (pode ser expandida conforme necessidade)
     if (!nome || !meta || !oeo) {
@@ -57,6 +57,7 @@ app.post('/dashboard/criar', async (req, res) => {
       nome,
       meta,
       oeo,
+      formula: formula || '',
       desempenhos: {}
     });
 
